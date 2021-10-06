@@ -4,6 +4,9 @@
 
     <data class="ChatActivityDataBinding">
 
+        <variable
+            name="adapter"
+            type="com.example.meddybuddyassigment.chat.views.adapter.SetChatAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,7 +14,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".chat.views.ChatActivity">
+        tools:context=".chat.views.activity.ChatActivity">
 
         <EditText
             android:id="@+id/edtEnterMessage"
@@ -41,9 +44,13 @@
             android:id="@+id/list_chat_message"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/edtEnterMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:setAdapter="@{adapter}"
+            tools:listitem="@layout/view_item_chat" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

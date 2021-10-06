@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">MeddyBuddyAssigment</string>
+    <string name="app_name">MediBuddyAssigment</string>
+    <string name="oops_no_internet_connection">Oops! No Internet Connection</string>
+    <string name="something_is_not_right_here">Something is not right here</string>
 </resources>

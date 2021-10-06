@@ -6,6 +6,7 @@ buildscript {
     ext.cardviewVersion = '1.0.0'
     ext.lifecycle_version = "2.3.1"
     ext.daggerVersion = "2.37"
+    ext.coroutinesVersion = '1.4.3'
     repositories {
         google()
         mavenCentral()
