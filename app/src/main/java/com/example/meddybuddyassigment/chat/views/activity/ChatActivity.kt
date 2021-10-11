@@ -3,8 +3,11 @@ package com.example.meddybuddyassigment.chat.views.activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
+import android.view.Menu
 import androidx.activity.viewModels
 import com.example.meddybuddyassigment.R
+import com.example.meddybuddyassigment.chat.local.ChatEntity
 import com.example.meddybuddyassigment.chat.model.ChatMessage
 import com.example.meddybuddyassigment.chat.viewmodel.ChatViewModel
 import com.example.meddybuddyassigment.chat.viewmodel.ChatViewModelViewModelFactory
@@ -13,9 +16,10 @@ import com.example.meddybuddyassigment.databinding.ChatActivityDataBinding
 import com.example.meddybuddyassigment.di.DaggerProvider
 import com.example.meddybuddyassigment.network.Status
 import com.example.meddybuddyassigment.util.ConstantsUtil
-import com.google.gson.Gson
-import com.groofy.common.base.activity.BaseDataBindingActivity
+import com.example.meddybuddyassigment.common.base.activity.BaseDataBindingActivity
 import javax.inject.Inject
+import android.view.MenuItem
+
 
 class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.activity_chat) {
 
@@ -26,9 +30,22 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
 
     private var setChatAdapter: SetChatAdapter? = null
 
+    private var externalID: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupObserver()
+        // Set Toolbar Title
+        supportActionBar?.title = "$externalID"
+    }
+
+    override fun processIntent(intent: Intent) {
+        getIntentData()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
     }
 
     override fun injectDaggerComponent() {
@@ -39,17 +56,42 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
         setAddressListAdapter()
         setListener()
         binding.adapter = setChatAdapter
+
+        // Get All the Message form the local DB
+        viewModel.getAllMessages(externalID)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.getItemId()) {
+            R.id.action_add -> {
+                startActivity(Intent(this, AddUserActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun getIntentData() {
+        intent?.extras?.let {
+            externalID =
+                it.getString(ConstantsUtil.USERNAME, "")
+
+            Log.e("UserName", externalID)
+        }
+    }
 
     private fun setListener() {
         binding.btnSend.setOnClickListener {
+            if (TextUtils.isEmpty(externalID)) {
+                return@setOnClickListener
+            }
             val mesage = binding.edtEnterMessage.text.toString()
             if (!TextUtils.isEmpty(mesage)) {
                 val dataMap = hashMapOf<String, Any>(
                     "apiKey" to "${ConstantsUtil.API_KEY}",
                     "chatBotID" to "${ConstantsUtil.CHAT_BOX_ID}",
-                    "externalID" to "mohitgarg103",
+                    "externalID" to externalID,
                     "message" to mesage
                 )
                 viewModel.sendMessage(dataMap)
@@ -76,6 +118,21 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 }
             }
         })
+
+        viewModel.resultMessageList.observe(this, {
+            when (it.status) {
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                }
+                Status.SUCCESS -> {
+                    val result = it.data
+                    result?.let { it ->
+                        setAddressListAdapter(result)
+                    }
+                }
+            }
+        })
     }
 
     private fun setAddressListAdapter(data: List<ChatMessage> = emptyList()) {
@@ -96,6 +153,17 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
         setChatAdapter?.let {
             it.update(chatMessage)
         }
+        //Insert into Local DB
+        viewModel.insertMessage(
+            ChatEntity(
+                0,
+                externalID,
+                message,
+                sender,
+                chatBotName,
+                ConstantsUtil.CHAT_BOX_ID.toInt()
+            )
+        )
     }
 
 }

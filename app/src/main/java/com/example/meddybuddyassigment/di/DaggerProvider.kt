@@ -4,6 +4,7 @@ import com.example.meddybuddyassigment.app.MyApplication
 import com.example.meddybuddyassigment.di.component.AppComponent
 import com.example.meddybuddyassigment.di.component.DaggerAppComponent
 import com.example.meddybuddyassigment.di.modules.ApplicationModule
+import com.example.meddybuddyassigment.di.modules.RoomModule
 
 class DaggerProvider {
 
@@ -13,6 +14,7 @@ class DaggerProvider {
         fun initComponent(application: MyApplication) {
             appComponent = DaggerAppComponent.builder()
                 .applicationModule(ApplicationModule(application))
+                .roomModule(RoomModule(application))
                 .build()
         }
 

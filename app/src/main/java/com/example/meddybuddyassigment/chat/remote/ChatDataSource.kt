@@ -1,4 +1,4 @@
-package com.groofy.login.remote
+package com.example.meddybuddyassigment.chat.remote
 
 import com.example.meddybuddyassigment.chat.model.ChatResponseModel
 import retrofit2.http.QueryMap

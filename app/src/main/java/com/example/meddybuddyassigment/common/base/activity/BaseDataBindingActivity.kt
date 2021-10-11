@@ -1,9 +1,8 @@
-package com.groofy.common.base.activity
+package com.example.meddybuddyassigment.common.base.activity
 
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.example.meddybuddyassigment.common.base.activity.BaseActivity
 
 /**
  * BaseActivity class that takes in

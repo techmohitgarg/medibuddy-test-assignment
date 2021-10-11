@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <data class="ChatActivityDataBinding">
+    <data class="AddUserActivityDataBinding">
 
         <variable
             name="adapter"
-            type="com.example.meddybuddyassigment.chat.views.adapter.SetChatAdapter" />
+            type="com.example.meddybuddyassigment.chat.views.adapter.SetUserAdapter" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".chat.views.activity.ChatActivity">
+        tools:context=".chat.views.activity.AddUserActivity">
 
         <EditText
-            android:id="@+id/edtEnterMessage"
+            android:id="@+id/edtEnterUserName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:hint="Enter Message"
+            android:hint="Enter User Name"
             android:inputType="textPersonName"
             android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnSend"
+            app:layout_constraintEnd_toStartOf="@+id/btnAdd"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/btnSend"
+            android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Send"
+            android:text="Add User"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -45,11 +45,11 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/edtEnterMessage"
+            app:layout_constraintBottom_toTopOf="@+id/edtEnterUserName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:setAdapter="@{adapter}"
-            tools:listitem="@layout/view_item_chat" />
+            tools:listitem="@layout/view_item_user" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

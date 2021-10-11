@@ -16,9 +16,9 @@ abstract class BaseActivity(@LayoutRes private val screenLayoutId: Int) : AppCom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        processIntent(intent)
         injectDaggerComponent()
         setContentLayout(screenLayoutId)
-        processIntent(intent)
     }
 
     open fun setContentLayout(@LayoutRes layoutRes: Int) {

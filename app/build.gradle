@@ -51,7 +51,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$retrofitInterceptorVersion"
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$project.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
     implementation 'com.amitshekhar.android:rx2-android-networking:1.0.2'
     //Recyclerview
     implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
@@ -68,4 +68,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     //for variant screen view size
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    //Room
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 }

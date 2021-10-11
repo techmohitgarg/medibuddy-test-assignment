@@ -9,5 +9,7 @@ class ConstantsUtil {
         // Configured constants that has some values to pass
         const val API_KEY = "6nt5d1nJHkqbkphe" //apiKey
         const val CHAT_BOX_ID = "63906" //chatBotID
+
+        const val USERNAME = "username" //apiKey
     }
 }
