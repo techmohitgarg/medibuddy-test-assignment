@@ -19,6 +19,8 @@ import com.example.meddybuddyassigment.util.ConstantsUtil
 import com.example.meddybuddyassigment.common.base.activity.BaseDataBindingActivity
 import javax.inject.Inject
 import android.view.MenuItem
+import android.widget.Toast
+import com.example.meddybuddyassigment.util.ServiceManager
 
 
 class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.activity_chat) {
@@ -31,6 +33,9 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
     private var setChatAdapter: SetChatAdapter? = null
 
     private var externalID: String = ""
+
+    @Inject
+    lateinit var serviceManager: ServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,11 +88,17 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
 
     private fun setListener() {
         binding.btnSend.setOnClickListener {
+            val mesage = binding.edtEnterMessage.text.toString()
+            if (TextUtils.isEmpty(mesage)) {
+                return@setOnClickListener
+            }
+            // This is safe check to prevent the api call in case of
             if (TextUtils.isEmpty(externalID)) {
                 return@setOnClickListener
             }
-            val mesage = binding.edtEnterMessage.text.toString()
-            if (!TextUtils.isEmpty(mesage)) {
+            if (!serviceManager.isNetworkAvailable()) {
+
+            } else {
                 val dataMap = hashMapOf<String, Any>(
                     "apiKey" to "${ConstantsUtil.API_KEY}",
                     "chatBotID" to "${ConstantsUtil.CHAT_BOX_ID}",
@@ -96,7 +107,7 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 )
                 viewModel.sendMessage(dataMap)
                 // Update the Message into list
-                updateMessage(message = mesage, sender = true)
+                updateMessage(message = mesage, sender = true, isSync = true)
                 //Clear the edit text
                 binding.edtEnterMessage.setText("")
             }
@@ -113,7 +124,11 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 Status.SUCCESS -> {
                     val result = it.data
                     result?.let { it ->
-                        updateMessage(it.message.chatBotName, it.message.message, false)
+                        updateMessage(
+                            it.message.chatBotName, it.message.message,
+                            sender = false,
+                            isSync = true
+                        )
                     }
                 }
             }
@@ -143,7 +158,12 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
         }
     }
 
-    private fun updateMessage(chatBotName: String = "", message: String, sender: Boolean) {
+    private fun updateMessage(
+        chatBotName: String = "",
+        message: String,
+        sender: Boolean,
+        isSync: Boolean
+    ) {
         val chatMessage = ChatMessage(
             chatBotName = chatBotName,
             chatBotID = ConstantsUtil.CHAT_BOX_ID.toInt(),
@@ -161,7 +181,8 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 message,
                 sender,
                 chatBotName,
-                ConstantsUtil.CHAT_BOX_ID.toInt()
+                ConstantsUtil.CHAT_BOX_ID.toInt(),
+                isSync
             )
         )
     }

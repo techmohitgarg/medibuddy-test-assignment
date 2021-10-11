@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder
 import com.example.meddybuddyassigment.chat.local.LocalSource
 import com.example.meddybuddyassigment.chat.remote.ChatDataSource
 import com.example.meddybuddyassigment.chat.remote.ChatDataSourceImp
+import com.example.meddybuddyassigment.util.ServiceManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -24,6 +25,12 @@ class ApplicationModule(private val application: MyApplication) {
     fun providesGson(): Gson {
         return GsonBuilder()
             .create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideServiceManager(): ServiceManager {
+        return ServiceManager(application.applicationContext)
     }
 
     @Singleton

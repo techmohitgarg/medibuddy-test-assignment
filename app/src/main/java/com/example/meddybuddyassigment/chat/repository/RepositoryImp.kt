@@ -25,12 +25,12 @@ class RepositoryImp(
         return listOfChatMessage
     }
 
-    override suspend fun insertMessage(chatEntity: ChatEntity) {
+    override suspend fun insertMessage(chatEntity: ChatEntity): Long {
         return chatLocalSource.insertMessage(chatEntity)
     }
 
     override suspend fun insertUser(userEntity: UserEntity) {
-       return chatLocalSource.insertUser(userEntity)
+        return chatLocalSource.insertUser(userEntity)
     }
 
     override suspend fun loadAllUser(): List<UserEntity> {

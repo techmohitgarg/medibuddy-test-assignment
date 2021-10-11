@@ -38,7 +38,8 @@ class ChatViewModel(
     fun insertMessage(chatEntity: ChatEntity) {
         viewModelScope.launch {
             try {
-                chatRepository.insertMessage(chatEntity)
+                val id = chatRepository.insertMessage(chatEntity)
+                Log.e("ID ", id.toString())
             } catch (exception: Exception) {
             }
         }

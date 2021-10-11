@@ -14,6 +14,7 @@ import com.example.meddybuddyassigment.di.DaggerProvider
 import com.example.meddybuddyassigment.network.Status
 import com.example.meddybuddyassigment.util.ConstantsUtil
 import com.example.meddybuddyassigment.common.base.activity.BaseDataBindingActivity
+import com.example.meddybuddyassigment.util.ServiceManager
 import javax.inject.Inject
 
 class AddUserActivity :
@@ -21,6 +22,9 @@ class AddUserActivity :
 
     @Inject
     lateinit var viewModelFactory: ChatViewModelViewModelFactory
+
+    @Inject
+    lateinit var serviceManager: ServiceManager
 
     private val viewModel by viewModels<ChatViewModel>(factoryProducer = { viewModelFactory })
     private var setUserAdapter: SetUserAdapter? = null

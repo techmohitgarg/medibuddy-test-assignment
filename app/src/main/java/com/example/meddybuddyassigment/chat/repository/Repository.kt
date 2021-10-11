@@ -14,7 +14,7 @@ interface Repository {
 
     suspend fun getAllMessage(externalID: String): List<ChatMessage>
 
-    suspend fun insertMessage(chatEntity: ChatEntity)
+    suspend fun insertMessage(chatEntity: ChatEntity): Long
 
     suspend fun insertUser(userEntity: UserEntity)
 

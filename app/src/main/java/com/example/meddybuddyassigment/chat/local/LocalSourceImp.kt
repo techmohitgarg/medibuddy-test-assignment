@@ -11,7 +11,7 @@ class LocalSourceImp(private val chatDao: ChatDao, private val userDao: UserDao)
         return chatDao.loadAllByIds(externalID)
     }
 
-    override suspend fun insertMessage(chatEntity: ChatEntity) {
+    override suspend fun insertMessage(chatEntity: ChatEntity): Long {
         return chatDao.insertMessage(chatEntity)
     }
 
