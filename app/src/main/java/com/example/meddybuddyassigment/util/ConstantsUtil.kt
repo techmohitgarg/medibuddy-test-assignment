@@ -11,5 +11,7 @@ class ConstantsUtil {
         const val CHAT_BOX_ID = "63906" //chatBotID
 
         const val USERNAME = "username" //apiKey
+
+        const val NETWORK_FILTER = "android.net.conn.CONNECTIVITY_CHANGE"
     }
 }

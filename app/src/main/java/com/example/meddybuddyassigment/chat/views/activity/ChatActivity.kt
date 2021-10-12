@@ -1,5 +1,8 @@
 package com.example.meddybuddyassigment.chat.views.activity
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -19,11 +22,14 @@ import com.example.meddybuddyassigment.util.ConstantsUtil
 import com.example.meddybuddyassigment.common.base.activity.BaseDataBindingActivity
 import javax.inject.Inject
 import android.view.MenuItem
-import android.widget.Toast
+import com.example.meddybuddyassigment.broadcastreceiver.BroadCastObservable
+import com.example.meddybuddyassigment.service.NetworkJobScheduler
 import com.example.meddybuddyassigment.util.ServiceManager
+import java.util.*
 
 
-class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.activity_chat) {
+class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.activity_chat),
+    Observer {
 
     @Inject
     lateinit var viewModelFactory: ChatViewModelViewModelFactory
@@ -31,6 +37,8 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
     private val viewModel by viewModels<ChatViewModel>(factoryProducer = { viewModelFactory })
 
     private var setChatAdapter: SetChatAdapter? = null
+    private var jobScheduler: JobScheduler? = null
+    private lateinit var jobInfo: JobInfo
 
     private var externalID: String = ""
 
@@ -42,6 +50,20 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
         setupObserver()
         // Set Toolbar Title
         supportActionBar?.title = "$externalID"
+    }
+
+    override fun onStart() {
+        super.onStart()
+        BroadCastObservable.getInstance().addObserver(this)
+        scheduleJob()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        jobScheduler?.apply {
+            cancel(jobInfo.id)
+        }
     }
 
     override fun processIntent(intent: Intent) {
@@ -74,6 +96,13 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun update(o: Observable?, arg: Any?) {
+        arg?.let {
+            val isConnected = arg as Boolean
+            Log.e("isConnected ", isConnected.toString())
         }
     }
 
@@ -187,4 +216,17 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
         )
     }
 
+    private fun scheduleJob() {
+        jobInfo = JobInfo.Builder(0, ComponentName(this, NetworkJobScheduler::class.java))
+            .setRequiresCharging(true)
+            .setMinimumLatency(1000)
+            .setOverrideDeadline(2000)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            .setPersisted(true)
+            .build()
+        jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+        jobScheduler?.apply {
+            schedule(jobInfo)
+        }
+    }
 }

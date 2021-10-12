@@ -29,14 +29,14 @@ class ApplicationModule(private val application: MyApplication) {
 
     @Singleton
     @Provides
-    fun provideServiceManager(): ServiceManager {
-        return ServiceManager(application.applicationContext)
+    fun provideErrorProvider(): ErrorProvider {
+        return ErrorProviderImpl(application.applicationContext)
     }
 
     @Singleton
     @Provides
-    fun provideErrorProvider(): ErrorProvider {
-        return ErrorProviderImpl(application.applicationContext)
+    fun provideServiceManager(): ServiceManager {
+        return ServiceManager(application.applicationContext)
     }
 
     @Singleton

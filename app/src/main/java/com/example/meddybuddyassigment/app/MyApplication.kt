@@ -1,15 +1,12 @@
 package com.example.meddybuddyassigment.app
 
 import android.app.Application
+import com.example.meddybuddyassigment.broadcastreceiver.BroadCastObservable
 import com.example.meddybuddyassigment.di.DaggerProvider
 import com.example.meddybuddyassigment.di.component.AppComponent
 
 class MyApplication : Application() {
     private lateinit var mAppComponent: AppComponent
-
-    init {
-        instance_ = this
-    }
 
     companion object {
         lateinit var instance_: MyApplication
@@ -21,6 +18,9 @@ class MyApplication : Application() {
         super.onCreate()
         DaggerProvider.initComponent(this)
         DaggerProvider.getAppComponent()?.inject(this)
+
+        BroadCastObservable.init()
+
     }
 
 }
