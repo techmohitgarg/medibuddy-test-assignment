@@ -2,12 +2,12 @@ package com.example.meddybuddyassigment.broadcastreceiver
 
 import java.util.*
 
-class BroadCastObservable : Observable() {
+class NetWorkUpdateObservable : Observable() {
     companion object {
-        lateinit var instance_: BroadCastObservable
+        lateinit var instance_: NetWorkUpdateObservable
 
         fun init() {
-            instance_ = BroadCastObservable()
+            instance_ = NetWorkUpdateObservable()
         }
 
         fun getInstance() = instance_

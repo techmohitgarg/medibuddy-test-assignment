@@ -11,8 +11,19 @@ class LocalSourceImp(private val chatDao: ChatDao, private val userDao: UserDao)
         return chatDao.loadAllByIds(externalID)
     }
 
+    override suspend fun loadAllUnSyncMessage(
+        isSync: Boolean,
+        externalID: String
+    ): List<ChatEntity> {
+        return chatDao.loadAllUnSyncMessage(isSync, externalID)
+    }
+
     override suspend fun insertMessage(chatEntity: ChatEntity): Long {
         return chatDao.insertMessage(chatEntity)
+    }
+
+    override suspend fun updateMessage(chatEntity: ChatEntity) {
+        return chatDao.updateMessage(chatEntity)
     }
 
     override suspend fun insertUser(userEntity: UserEntity) {

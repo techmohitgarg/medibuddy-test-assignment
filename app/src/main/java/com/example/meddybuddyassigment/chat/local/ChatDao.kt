@@ -16,6 +16,6 @@ interface ChatDao {
     @Update
     suspend fun updateMessage(chatEntity: ChatEntity)
 
-    @Query("SELECT * FROM ChatEntity WHERE uid IN (:uid)")
-    suspend fun loadById(uid: Int): ChatEntity
+    @Query("SELECT * FROM ChatEntity WHERE isSync like (:isSync) and externalID like (:externalID)")
+    suspend fun loadAllUnSyncMessage(isSync: Boolean, externalID: String): List<ChatEntity>
 }

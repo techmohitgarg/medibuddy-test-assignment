@@ -9,7 +9,7 @@ class NetworkListener : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
             val service = ServiceManager(context)
-            BroadCastObservable.getInstance().updateValue(service.isNetworkAvailable())
+            NetWorkUpdateObservable.getInstance().updateValue(service.isNetworkAvailable())
         }
     }
 }

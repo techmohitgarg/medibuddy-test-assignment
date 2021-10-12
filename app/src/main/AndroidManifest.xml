@@ -17,10 +17,10 @@
         android:theme="@style/Theme.MeddyBuddyAssigment"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".chat.views.activity.AddUserActivity"
+            android:name=".chat.views.activity.ChatActivity"
             android:exported="true" />
         <activity
-            android:name=".chat.views.activity.ChatActivity"
+            android:name=".chat.views.activity.UserListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

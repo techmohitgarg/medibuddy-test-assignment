@@ -22,7 +22,7 @@ import com.example.meddybuddyassigment.util.ConstantsUtil
 import com.example.meddybuddyassigment.common.base.activity.BaseDataBindingActivity
 import javax.inject.Inject
 import android.view.MenuItem
-import com.example.meddybuddyassigment.broadcastreceiver.BroadCastObservable
+import com.example.meddybuddyassigment.broadcastreceiver.NetWorkUpdateObservable
 import com.example.meddybuddyassigment.service.NetworkJobScheduler
 import com.example.meddybuddyassigment.util.ServiceManager
 import java.util.*
@@ -54,7 +54,7 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
 
     override fun onStart() {
         super.onStart()
-        BroadCastObservable.getInstance().addObserver(this)
+        NetWorkUpdateObservable.getInstance().addObserver(this)
         scheduleJob()
     }
 
@@ -92,7 +92,7 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
         // Handle item selection
         return when (item.getItemId()) {
             R.id.action_add -> {
-                startActivity(Intent(this, AddUserActivity::class.java))
+                startActivity(Intent(this, UserListActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -102,6 +102,9 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
     override fun update(o: Observable?, arg: Any?) {
         arg?.let {
             val isConnected = arg as Boolean
+            if (isConnected) {
+                viewModel.getAllUnSyncMessages(false, externalID)
+            }
             Log.e("isConnected ", isConnected.toString())
         }
     }
@@ -126,6 +129,11 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 return@setOnClickListener
             }
             if (!serviceManager.isNetworkAvailable()) {
+
+                // Update the Message into list
+                updateMessage(message = mesage, sender = true, isSync = false)
+                //Clear the edit text
+                binding.edtEnterMessage.setText("")
 
             } else {
                 val dataMap = hashMapOf<String, Any>(
@@ -177,6 +185,33 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
                 }
             }
         })
+        viewModel.resultUnSyncMessageList.observe(this, {
+            when (it.status) {
+                Status.LOADING -> {
+                }
+                Status.ERROR -> {
+                }
+                Status.SUCCESS -> {
+                    val result = it.data
+                    Log.e("Entity ", result.toString())
+                    result?.let { it ->
+                        it.forEach { entity ->
+                            Log.e("Entity ", entity.toString())
+                            entity.isSync = true
+                            // Update the Chat Message In Local DB
+                            viewModel.updateMessage(entity)
+                            val dataMap = hashMapOf<String, Any>(
+                                "apiKey" to "${ConstantsUtil.API_KEY}",
+                                "chatBotID" to "${ConstantsUtil.CHAT_BOX_ID}",
+                                "externalID" to externalID,
+                                "message" to entity.message
+                            )
+                            viewModel.sendMessage(dataMap)
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun setAddressListAdapter(data: List<ChatMessage> = emptyList()) {
@@ -199,9 +234,12 @@ class ChatActivity : BaseDataBindingActivity<ChatActivityDataBinding>(R.layout.a
             message = message,
             sender = sender
         )
+        // Update the Adapter
         setChatAdapter?.let {
             it.update(chatMessage)
         }
+        // Scroll the list to Down
+        setChatAdapter?.itemCount?.minus(1)?.let { binding.listChatMessage.smoothScrollToPosition(it) }
         //Insert into Local DB
         viewModel.insertMessage(
             ChatEntity(

@@ -35,11 +35,26 @@ class ChatViewModel(
     val resultUserList: LiveData<com.example.meddybuddyassigment.network.Result<List<UserEntity>>>
         get() = _resultUserList
 
+
+    private val _resultUnSyncMessageList =
+        MutableLiveData<com.example.meddybuddyassigment.network.Result<List<ChatEntity>>>()
+    val resultUnSyncMessageList: LiveData<com.example.meddybuddyassigment.network.Result<List<ChatEntity>>>
+        get() = _resultUnSyncMessageList
+
     fun insertMessage(chatEntity: ChatEntity) {
         viewModelScope.launch {
             try {
                 val id = chatRepository.insertMessage(chatEntity)
-                Log.e("ID ", id.toString())
+                Log.e("Insert ", id.toString())
+            } catch (exception: Exception) {
+            }
+        }
+    }
+
+    fun updateMessage(chatEntity: ChatEntity) {
+        viewModelScope.launch {
+            try {
+                chatRepository.updateMessage(chatEntity)
             } catch (exception: Exception) {
             }
         }
@@ -65,6 +80,25 @@ class ChatViewModel(
                 )
             } catch (exception: Exception) {
                 _resultMessageList.postValue(
+                    com.example.meddybuddyassigment.network.Result.error(
+                        errorProvider.getErrorMessage(exception)
+                    )
+                )
+            }
+        }
+    }
+
+    fun getAllUnSyncMessages(isSync: Boolean, externalID: String) {
+        viewModelScope.launch {
+            try {
+                val data = chatRepository.loadAllUnSyncMessage(isSync, externalID)
+                _resultUnSyncMessageList.postValue(
+                    com.example.meddybuddyassigment.network.Result.success(
+                        data
+                    )
+                )
+            } catch (exception: Exception) {
+                _resultUnSyncMessageList.postValue(
                     com.example.meddybuddyassigment.network.Result.error(
                         errorProvider.getErrorMessage(exception)
                     )

@@ -17,7 +17,7 @@ import com.example.meddybuddyassigment.common.base.activity.BaseDataBindingActiv
 import com.example.meddybuddyassigment.util.ServiceManager
 import javax.inject.Inject
 
-class AddUserActivity :
+class UserListActivity :
     BaseDataBindingActivity<AddUserActivityDataBinding>(R.layout.activity_add_user) {
 
     @Inject

@@ -12,5 +12,5 @@ data class ChatEntity(
     @ColumnInfo(name = "sender") val sender: Boolean,
     @ColumnInfo(name = "chatBotName") val chatBotName: String,
     @ColumnInfo(name = "chatBotID") val chatBotID: Int,
-    @ColumnInfo(name = "isSync") val isSync: Boolean
+    @ColumnInfo(name = "isSync") var isSync: Boolean
 )

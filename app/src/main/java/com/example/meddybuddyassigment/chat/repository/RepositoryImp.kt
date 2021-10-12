@@ -29,11 +29,22 @@ class RepositoryImp(
         return chatLocalSource.insertMessage(chatEntity)
     }
 
+    override suspend fun updateMessage(chatEntity: ChatEntity) {
+        return chatLocalSource.updateMessage(chatEntity)
+    }
+
     override suspend fun insertUser(userEntity: UserEntity) {
         return chatLocalSource.insertUser(userEntity)
     }
 
     override suspend fun loadAllUser(): List<UserEntity> {
         return chatLocalSource.loadAllUser()
+    }
+
+    override suspend fun loadAllUnSyncMessage(
+        isSync: Boolean,
+        externalID: String
+    ): List<ChatEntity> {
+        return chatLocalSource.loadAllUnSyncMessage(isSync, externalID)
     }
 }
